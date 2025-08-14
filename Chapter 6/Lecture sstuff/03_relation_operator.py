@@ -4,7 +4,6 @@ if(a%2 ==0 ):
   print("a is even")
   # end of statement no 1:
 
-
 # if statement no 2:
 if(a>18):
   print("you are above the age of conscent")
