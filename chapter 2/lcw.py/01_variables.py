@@ -1,8 +1,10 @@
-a = 3
-b = 5
-print(a+b) 
-print("Harry is good teacher")
-c = 4.5
-print(a+b+c)
-print(a+b-c) 
-print(b+C)
+# Basic Python Program: Check Even or Odd
+
+# Taking input from user
+num = int(input("Enter a number: "))
+
+# Checking even or odd
+if num % 2 == 0:
+    print(num, "is Even")
+else:
+    print(num, "is Odd")
