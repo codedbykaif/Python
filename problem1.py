@@ -27,3 +27,6 @@ Twinkle, twinkle, little star. ''')
 
 
 print("Thi is my first commit after linking vscode to github")
+
+print("lorem500" \
+"")
