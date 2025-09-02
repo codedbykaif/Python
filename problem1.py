@@ -18,3 +18,6 @@ Till the sun is in the sky.
 Lights the traveller in the dark:
 Though I know not what you are,
 Twinkle, twinkle, little star. ''')
+
+
+print("Thi is my first commit after linking vscode to github")
