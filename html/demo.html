@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>My Simple Page</title>
+  <style>
+    /* Small inline styles to make it look neat */
+    body { font-family: system-ui, Arial, sans-serif; line-height: 1.6; padding: 2rem; max-width: 800px; margin: auto; }
+    header { margin-bottom: 1.5rem; }
+    .btn { padding: 0.5rem 1rem; border: 1px solid #333; background: transparent; cursor: pointer; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Welcome to my simple HTML page</h1>
+    <p>A tiny example showing headings, lists, a link and a button.</p>
+  </header>
+
+  <section>
+    <h2>Things I like</h2>
+    <ul>
+      <li>Coding</li>
+      <li>Making videos</li>
+      <li>Playing basketball</li>
+    </ul>
+
+    <p>Visit <a href="https://example.com" target="_blank" rel="noopener">example.com</a> for a demo site.</p>
+
+    <button class="btn" id="helloBtn">Click me</button>
+    <p id="msg" aria-live="polite"></p>
+  </section>
+
+  <footer style="margin-top:2rem; font-size:0.9rem; color:#666;">
+    Made with ❤️ — simple HTML demo
+  </footer>
+
+  <script>
+    // Small interactivity: change text when button is clicked
+    document.getElementById('helloBtn').addEventListener('click', function () {
+      const p = document.getElementById('msg');
+      p.textContent = 'Hello — you clicked the button! 🎉';
+    });
+  </script>
+</body>
+</html>
