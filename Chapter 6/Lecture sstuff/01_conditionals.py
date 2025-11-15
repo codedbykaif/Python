@@ -14,3 +14,4 @@ else:
   print("you are below the age of conscent")
   
 print("End of program")
+print("Have a nice day")
