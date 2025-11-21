@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Advanced Frontend Single Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #070b18;
+      --bg-elevated: #0f172a;
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.15);
+      --accent-strong: #6366f1;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --border: #1f2933;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.55);
+      --transition-fast: 0.2s ease;
+    }
+
+    /* Light mode variables (will be toggled with JS) */
+    :root.light {
+      --bg: #f3f4f6;
+      --bg-elevated: #ffffff;
+      --accent: #2563eb;
+      --accent-soft: rgba(37, 99, 235, 0.1);
+      --accent-strong: #1d4ed8;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #111827 0, var(--bg) 55%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 4rem;
+    }
+
+    /* ================= NAVBAR ================= */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(16px);
+      background: linear-gradient(
+        to bottom,
+        rgba(7, 11, 24, 0.9),
+        rgba(7, 11, 24, 0.65),
+        transparent
+      );
+      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    }
+
+    .nav-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+
+    .logo-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: conic-gradient(from 140deg, #22d3ee, #4f46e5, #ec4899, #22d3ee);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(37, 99, 235, 0.8);
+    }
+
+    .logo-mark span {
+      font-size: 0.8rem;
+      color: white;
+      font-weight: 700;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      font-size: 0.9rem;
+    }
+
+    .nav-links a {
+      position: relative;
+      color: var(--muted);
+      padding-bottom: 0.15rem;
+      transition: color var(--transition-fast);
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(to right, #22d3ee, var(--accent-strong));
+      border-radius: 999px;
+      transition: width 0.22s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      border-radius: 999px;
+      padding: 0.55rem 1.15rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.4);
+    }
+
+    .btn-outline {
+      border-color: rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.5);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: white;
+      box-shadow: 0 14px 40px rgba(79, 70, 229, 0.75);
+    }
+
+    .btn-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      background: rgba(15, 23, 42, 0.7);
+    }
+
+    .btn-icon span {
+      transform: translateY(1px);
+    }
+
+    /* ================= HERO ================= */
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.4fr);
+      gap: 3rem;
+      align-items: center;
+      padding: 2.5rem 0 3.5rem;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.2rem 0.75rem 0.25rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 1.1rem;
+    }
+
+    .hero-tag-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.26);
+    }
+
+    .hero-title {
+      font-size: clamp(2.3rem, 5vw, 3.1rem);
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      margin-bottom: 0.8rem;
+    }
+
+    .hero-title span.gradient {
+      background: linear-gradient(120deg, #22d3ee, #4f46e5, #ec4899);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .typing {
+      display: inline-block;
+      border-right: 2px solid var(--accent-strong);
+      padding-right: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      vertical-align: bottom;
+      min-width: 110px;
+    }
+
+    .hero-subtitle {
+      max-width: 480px;
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-cta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 1.75rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .hero-pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.7rem;
+    }
+
+    .hero-pill {
+      padding: 0.28rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      border: 1px dashed rgba(148, 163, 184, 0.5);
+      color: var(--muted);
+      background: rgba(15, 23, 42, 0.7);
+    }
+
+    .hero-pill strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .hero-visual {
+      position: relative;
+      padding: 1.2rem;
+    }
+
+    .hero-card {
+      border-radius: 24px;
+      background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), transparent 55%),
+                  radial-gradient(circle at bottom, rgba(129, 140, 248, 0.18), transparent 55%),
+                  var(--bg-elevated);
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      padding: 1.25rem 1.25rem 1.35rem;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .hero-card-dots {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+    }
+
+    .dot.red { background: #f87171; }
+    .dot.yellow { background: #facc15; }
+    .dot.green { background: #34d399; }
+
+    .hero-card-badge {
+      padding: 0.15rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      color: var(--muted);
+    }
+
+    .code-window {
+      font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+      font-size: 0.75rem;
+      background: rgba(15, 23, 42, 0.92);
+      border-radius: 16px;
+      padding: 0.9rem 0.9rem 0.7rem;
+      border: 1px solid rgba(15, 23, 42, 0.9);
+      position: relative;
+      overflow: auto;
+      max-height: 260px;
+    }
+
+    .code-line {
+      display: block;
+      margin-bottom: 0.1rem;
+    }
+
+    .code-line span.comment { color: #6b7280; }
+    .code-line span.keyword { color: #60a5fa; }
+    .code-line span.fn { color: #a5b4fc; }
+    .code-line span.string { color: #facc15; }
+    .code-line span.pink { color: #f472b6; }
+    .code-line span.number { color: #f97316; }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.6rem;
+      margin-top: 1rem;
+      font-size: 0.75rem;
+    }
+
+    .stat {
+      border-radius: 12px;
+      padding: 0.6rem 0.7rem;
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 0.7rem;
+    }
+
+    .stat-value {
+      font-weight: 600;
+      margin-top: 0.1rem;
+    }
+
+    .glow-orbit {
+      position: absolute;
+      inset: -10%;
+      background:
+        radial-gradient(circle at 10% 0, rgba(56, 189, 248, 0.32), transparent 55%),
+        radial-gradient(circle at 90% 100%, rgba(244, 114, 182, 0.35), transparent 55%);
+      opacity: 0.4;
+      mix-blend-mode: screen;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* ================= SECTIONS ================= */
+    .section {
+      margin-top: 3rem;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .section-subtitle {
+      font-size: 0.85rem;
+      max-width: 420px;
+      color: var(--muted);
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+    }
+
+    /* FEATURES */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card {
+      border-radius: var(--radius-lg);
+      padding: 1.1rem 1.1rem 1.2rem;
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.75));
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+      transform: translateY(0);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at top left, var(--accent-soft), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(129, 140, 248, 0.9);
+      box-shadow: 0 22px 55px rgba(15, 23, 42, 0.85);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      margin-bottom: 0.7rem;
+      font-size: 1.1rem;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+      font-weight: 500;
+    }
+
+    .card-body {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 0.7rem;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .pill {
+      padding: 0.15rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      background: rgba(37, 99, 235, 0.11);
+      border: 1px solid rgba(129, 140, 248, 0.8);
+      color: #c7d2fe;
+    }
+
+    /* PROJECTS */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 2fr 1.4fr;
+      gap: 1.25rem;
+    }
+
+    .project-main {
+      border-radius: var(--radius-lg);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.8));
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      padding: 1.1rem 1.1rem 1.2rem;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-main::before {
+      content: "";
+      position: absolute;
+      inset: -20%;
+      background:
+        radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.25), transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(244, 114, 182, 0.3), transparent 60%);
+      opacity: 0.75;
+      pointer-events: none;
+    }
+
+    .project-main-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .project-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .chip {
+      font-size: 0.7rem;
+      border-radius: 999px;
+      padding: 0.12rem 0.6rem;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.95);
+      color: #e5e7eb;
+    }
+
+    .project-title {
+      font-size: 1.05rem;
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+    }
+
+    .project-desc {
+      font-size: 0.83rem;
+      color: var(--muted);
+      margin-bottom: 0.7rem;
+      max-width: 430px;
+    }
+
+    .project-preview {
+      margin-top: 0.7rem;
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      overflow: hidden;
+      padding: 0.6rem 0.7rem;
+      font-size: 0.78rem;
+    }
+
+    .preview-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.4rem;
+      color: var(--muted);
+    }
+
+    .preview-dots {
+      display: flex;
+      gap: 0.2rem;
+    }
+
+    .preview-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: #6b7280;
+    }
+
+    .preview-body {
+      display: grid;
+      grid-template-columns: 1.1fr 1.3fr;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .preview-tag {
+      font-size: 0.7rem;
+      padding: 0.12rem 0.45rem;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.12);
+      border: 1px solid rgba(129, 140, 248, 0.9);
+      color: #c7d2fe;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .preview-bar {
+      width: 100%;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(31, 41, 55, 0.9);
+      overflow: hidden;
+      margin-top: 0.35rem;
+    }
+
+    .preview-bar-fill {
+      height: 100%;
+      width: 68%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #22d3ee, #4f46e5, #ec4899);
+    }
+
+    .projects-small {
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    .project-small-card {
+      border-radius: 14px;
+      padding: 0.85rem 0.85rem 0.9rem;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      font-size: 0.8rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-small-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.32), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .project-small-card:hover::after {
+      opacity: 1;
+    }
+
+    .project-small-title {
+      font-size: 0.9rem;
+      margin-bottom: 0.1rem;
+      font-weight: 500;
+    }
+
+    .project-small-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.4rem;
+      color: var(--muted);
+    }
+
+    /* CONTACT */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.1fr);
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+
+    .contact-card {
+      border-radius: var(--radius-lg);
+      padding: 1.2rem 1.2rem 1.3rem;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      box-shadow: var(--shadow-soft);
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .contact-card strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    form {
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .field {
+      display: grid;
+      gap: 0.25rem;
+      font-size: 0.8rem;
+    }
+
+    label {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    input, textarea {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 0.55rem 0.85rem;
+      font-family: inherit;
+      font-size: 0.85rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    textarea {
+      border-radius: 16px;
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    input:focus, textarea:focus {
+      border-color: rgba(129, 140, 248, 0.95);
+      box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.7);
+      background: rgba(15, 23, 42, 0.95);
+    }
+
+    .error {
+      font-size: 0.75rem;
+      color: #f97373;
+      display: none;
+    }
+
+    .field.invalid .error {
+      display: block;
+    }
+
+    .field.invalid input,
+    .field.invalid textarea {
+      border-color: #f97373;
+      box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.7);
+    }
+
+    /* FOOTER */
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid rgba(148, 163, 184, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    footer a {
+      color: var(--muted);
+    }
+
+    footer a:hover {
+      color: var(--text);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+    }
+
+    /* BACK TO TOP BUTTON */
+    .back-to-top {
+      position: fixed;
+      right: 18px;
+      bottom: 20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: var(--text);
+      cursor: pointer;
+      box-shadow: var(--shadow-soft);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 45;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    /* SCROLL REVEAL ANIMATION */
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .hero-visual {
+        order: -1;
+      }
+
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .grid-3 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .projects-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .contact-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .nav-links {
+        display: none;
+      }
+
+      .page {
+        padding-inline: 1rem;
+      }
+
+      .grid-3 {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .hero-title {
+        font-size: 2.1rem;
+      }
+
+      footer {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <header class="nav">
+    <div class="nav-inner">
+      <div class="logo">
+        <div class="logo-mark"><span>∞</span></div>
+        <span>Frontend Lab</span>
+      </div>
+
+      <nav class="nav-links">
+        <a href="#hero">Home</a>
+        <a href="#features">Features</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button id="themeToggle" class="btn btn-icon" aria-label="Toggle theme">
+          <span>☀️</span>
+        </button>
+        <button class="btn btn-outline" onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})">
+          Showcase
+        </button>
+        <button class="btn btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+          Hire Me →
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <!-- HERO -->
+    <section id="hero" class="hero">
+      <div>
+        <div class="hero-tag">
+          <div class="hero-tag-dot"></div>
+          Live UI Prototype · v1.0
+        </div>
+
+        <h1 class="hero-title">
+          Build <span class="gradient">beautiful frontends</span><br>
+          with a <span class="typing" id="typing"></span>
+        </h1>
+
+        <p class="hero-subtitle">
+          This single HTML file demonstrates a modern, responsive, interactive frontend:
+          components, animations, dark mode, scroll effects, basic form validation and more.
+        </p>
+
+        <div class="hero-cta">
+          <button class="btn btn-primary" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">
+            Explore Components
+          </button>
+          <button class="btn btn-outline" onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})">
+            View Live Layout
+          </button>
+        </div>
+
+        <div class="hero-meta">
+          <span>⚡ No frameworks · pure HTML, CSS & JS</span>
+          <span>📦 All in a single <code>index.html</code></span>
+        </div>
+
+        <div class="hero-pill-group">
+          <div class="hero-pill"><strong>Responsive</strong> · mobile & desktop</div>
+          <div class="hero-pill"><strong>Interactive</strong> · scroll & theme</div>
+          <div class="hero-pill"><strong>Clean</strong> · modern UI patterns</div>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal">
+        <div class="hero-card">
+          <div class="glow-orbit"></div>
+
+          <div class="hero-card-header">
+            <div class="hero-card-dots">
+              <div class="dot red"></div>
+              <div class="dot yellow"></div>
+              <div class="dot green"></div>
+            </div>
+            <div class="hero-card-badge">live-preview.jsx</div>
+          </div>
+
+          <div class="code-window">
+            <span class="code-line"><span class="comment">// modern component preview</span></span>
+            <span class="code-line"><span class="keyword">const</span> <span class="fn">Hero</span> = () =&gt; &#123;</span>
+            <span class="code-line">  <span class="keyword">return</span> (</span>
+            <span class="code-line">    &lt;section className="<span class="string">hero</span>"&gt;</span>
+            <span class="code-line">      &lt;h1&gt;</span>
+            <span class="code-line">        Ship &lt;span className="<span class="string">gradient</span>"&gt;advanced&lt;/span&gt;</span>
+            <span class="code-line">        &amp;nbsp;frontends.</span>
+            <span class="code-line">      &lt;/h1&gt;</span>
+            <span class="code-line">      &lt;p&gt;All in a single HTML file.&lt;/p&gt;</span>
+            <span class="code-line">      &lt;Buttons primary="<span class="string">Explore UI</span>" /&gt;</span>
+            <span class="code-line">    &lt;/section&gt;</span>
+            <span class="code-line">  );</span>
+            <span class="code-line">&#125;;</span>
+            <span class="code-line"><span class="comment">// try tweaking variables in :root ✨</span></span>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat">
+              <div class="stat-label">Lines of code</div>
+              <div class="stat-value">~400+</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Tech</div>
+              <div class="stat-value">HTML · CSS · JS</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Mode</div>
+              <div class="stat-value" id="modeLabel">Dark</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features" class="section reveal">
+      <div class="section-header">
+        <div>
+          <div class="badge">Features</div>
+          <h2 class="section-title">What this frontend demonstrates</h2>
+        </div>
+        <p class="section-subtitle">
+          A quick showcase of common UI/UX patterns implemented with clean, modern
+          styling – ideal as a starting point for your own portfolio or landing page.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="card-icon">📱</div>
+          <h3 class="card-title">Responsive layout</h3>
+          <p class="card-body">
+            Uses CSS Grid and Flexbox to adapt seamlessly from large desktop screens
+            down to small mobile devices with minimal breakpoints.
+          </p>
+          <div class="card-meta">
+            <span class="pill">Grid · Flexbox</span>
+            <span>Resizes smoothly</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-icon">✨</div>
+          <h3 class="card-title">Micro-interactions</h3>
+          <p class="card-body">
+            Hover states, soft shadows, scroll reveal animations and a typewriter
+            headline create a polished, premium feel.
+          </p>
+          <div class="card-meta">
+            <span class="pill">Animations</span>
+            <span>CSS + JS</span>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-icon">🌗</div>
+          <h3 class="card-title">Dark / Light mode</h3>
+          <p class="card-body">
+            A theme toggle flips CSS variables at runtime, instantly updating colors
+            across the entire interface without reloading.
+          </p>
+          <div class="card-meta">
+            <span class="pill">CSS Variables</span>
+            <span>Theme aware</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" class="section reveal">
+      <div class="section-header">
+        <div>
+          <div class="badge">Showcase</div>
+          <h2 class="section-title">Layout & component examples</h2>
+        </div>
+        <p class="section-subtitle">
+          A hero, feature grid, project summary cards and a contact section —
+          everything you need for a modern portfolio or landing page structure.
+        </p>
+      </div>
+
+      <div class="projects-grid">
+        <article class="project-main">
+          <div class="project-main-inner">
+            <div class="project-chip-row">
+              <span class="chip">Landing page</span>
+              <span class="chip">Developer portfolio</span>
+              <span class="chip">Single file</span>
+            </div>
+
+            <h3 class="project-title">“Frontend Lab” · advanced index.html</h3>
+            <p class="project-desc">
+              A high-end developer landing page with sticky navigation, animated hero,
+              feature highlights, project previews and a functional contact form.
+            </p>
+
+            <div class="project-preview">
+              <div class="preview-nav">
+                <div class="preview-dots">
+                  <span class="preview-dot"></span>
+                  <span class="preview-dot"></span>
+                  <span class="preview-dot"></span>
+                </div>
+                <span>Live preview · 1440px</span>
+              </div>
+
+              <div class="preview-body">
+                <div>
+                  <div class="preview-tag">
+                    <span>●</span> Simulated analytics
+                  </div>
+                  <p style="margin-top:0.35rem;color:var(--muted);">
+                    Users explore hero → features → projects in a smooth scroll flow.
+                  </p>
+                  <div class="preview-bar">
+                    <div class="preview-bar-fill"></div>
+                  </div>
+                </div>
+                <div>
+                  <ul style="list-style:none;font-size:0.75rem;color:var(--muted);display:grid;gap:0.18rem;">
+                    <li>✔ Sticky navbar with blur</li>
+                    <li>✔ Scroll-to section buttons</li>
+                    <li>✔ Responsive grids</li>
+                    <li>✔ Animated code card</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <div class="projects-small">
+          <article class="project-small-card">
+            <h4 class="project-small-title">Dashboard widget layout</h4>
+            <p>
+              Composable cards with subtle hover, ideal for analytics dashboards,
+              admin panels and SaaS products.
+            </p>
+            <div class="project-small-meta">
+              <span>Cards · Grid · Stats</span>
+              <span>⬈</span>
+            </div>
+          </article>
+
+          <article class="project-small-card">
+            <h4 class="project-small-title">Blog / documentation shell</h4>
+            <p>
+              Reuse the section header, badge and text styles for content-heavy pages,
+              documentation or a developer blog.
+            </p>
+            <div class="project-small-meta">
+              <span>Typography · Layout</span>
+              <span>⬈</span>
+            </div>
+          </article>
+
+          <article class="project-small-card">
+            <h4 class="project-small-title">Reusable contact slice</h4>
+            <p>
+              Validated contact form with error states and subtle focus highlights —
+              simple to hook up to any backend.
+            </p>
+            <div class="project-small-meta">
+              <span>Form · Validation</span>
+              <span>⬈</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section reveal">
+      <div class="section-header">
+        <div>
+          <div class="badge">Contact</div>
+          <h2 class="section-title">Let’s build something together</h2>
+        </div>
+        <p class="section-subtitle">
+          The form below demonstrates simple client-side validation. Try submitting
+          it empty to see errors, or fill it out to simulate a successful send.
+        </p>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-card">
+          <p>
+            <strong>Need this UI as your portfolio?</strong><br>
+            Replace the copy with your own content, change colors in <code>:root</code>,
+            hook the form to your email / backend and you’re ready to ship.
+          </p>
+
+          <p style="margin-top:0.7rem;">
+            This page is intentionally built with <strong>no frameworks</strong> so you
+            can fully understand and customize every part of it.
+          </p>
+
+          <ul style="margin-top:0.8rem;list-style:none;display:grid;gap:0.3rem;font-size:0.83rem;">
+            <li>• Copy as <code>index.html</code> into any project</li>
+            <li>• Tweak breakpoints to match your design style</li>
+            <li>• Swap fonts, icons and colors for your brand</li>
+          </ul>
+        </div>
+
+        <form id="contactForm" novalidate>
+          <div class="field" id="field-name">
+            <label for="name">Name</label>
+            <input id="name" name="name" placeholder="Your name" />
+            <span class="error">Please enter your name.</span>
+          </div>
+
+          <div class="field" id="field-email">
+            <label for="email">Email</label>
+            <input id="email" name="email" placeholder="you@example.com" />
+            <span class="error">Please enter a valid email address.</span>
+          </div>
+
+          <div class="field" id="field-message">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" placeholder="Tell me about your project..."></textarea>
+            <span class="error">Please write at least 10 characters.</span>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="margin-top:0.4rem;">
+            Send message ✉️
+          </button>
+
+          <p id="formStatus" style="font-size:0.8rem;margin-top:0.6rem;color:var(--muted);display:none;">
+            ✅ Message sent! (Simulated in this demo.)
+          </p>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      <span>© <span id="year"></span> Frontend Lab · Single-file advanced UI.</span>
+      <div class="footer-links">
+        <a href="#hero">Back to top</a>
+        <span>·</span>
+        <a href="#features">Features</a>
+        <span>·</span>
+        <a href="#projects">Projects</a>
+      </div>
+    </footer>
+  </main>
+
+  <!-- BACK TO TOP BUTTON -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+  <script>
+    // ==== YEAR IN FOOTER ====
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // ==== THEME TOGGLE ====
+    const root = document.documentElement;
+    const themeToggle = document.getElementById("themeToggle");
+    const modeLabel = document.getElementById("modeLabel");
+
+    function setTheme(light) {
+      if (light) {
+        root.classList.add("light");
+        themeToggle.innerHTML = "<span>🌙</span>";
+        modeLabel.textContent = "Light";
+        localStorage.setItem("theme", "light");
+      } else {
+        root.classList.remove("light");
+        themeToggle.innerHTML = "<span>☀️</span>";
+        modeLabel.textContent = "Dark";
+        localStorage.setItem("theme", "dark");
+      }
+    }
+
+    // Load theme from localStorage
+    const storedTheme = localStorage.getItem("theme");
+    if (storedTheme === "light") {
+      setTheme(true);
+    }
+
+    themeToggle.addEventListener("click", () => {
+      const isLight = root.classList.contains("light");
+      setTheme(!isLight);
+    });
+
+    // ==== TYPEWRITER EFFECT ====
+    const typingEl = document.getElementById("typing");
+    const phrases = ["single file.", "clean design.", "modern stack.", "developer focus."];
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let deleting = false;
+
+    function typeLoop() {
+      const current = phrases[phraseIndex];
+      if (!deleting) {
+        charIndex++;
+        if (charIndex === current.length + 6) {
+          deleting = true;
+        }
+      } else {
+        charIndex--;
+        if (charIndex === 0) {
+          deleting = false;
+          phraseIndex = (phraseIndex + 1) % phrases.length;
+        }
+      }
+      typingEl.textContent = current.slice(0, Math.max(charIndex, 0));
+      const delay = deleting ? 60 : 80;
+      setTimeout(typeLoop, delay);
+    }
+    typeLoop();
+
+    // ==== BACK TO TOP BUTTON ====
+    const backToTop = document.getElementById("backToTop");
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 260) {
+        backToTop.classList.add("visible");
+      } else {
+        backToTop.classList.remove("visible");
+      }
+    });
+
+    backToTop.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    // ==== SCROLL REVEAL (IntersectionObserver) ====
+    const revealEls = document.querySelectorAll(".reveal");
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.18 }
+    );
+    revealEls.forEach(el => observer.observe(el));
+
+    // ==== SIMPLE FORM VALIDATION ====
+    const contactForm = document.getElementById("contactForm");
+    const formStatus = document.getElementById("formStatus");
+
+    contactForm.addEventListener("submit", e => {
+      e.preventDefault();
+      formStatus.style.display = "none";
+
+      const nameField = document.getElementById("field-name");
+      const emailField = document.getElementById("field-email");
+      const msgField = document.getElementById("field-message");
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const message = document.getElementById("message").value.trim();
+
+      let valid = true;
+
+      if (!name) {
+        nameField.classList.add("invalid");
+        valid = false;
+      } else {
+        nameField.classList.remove("invalid");
+      }
+
+      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      if (!emailValid) {
+        emailField.classList.add("invalid");
+        valid = false;
+      } else {
+        emailField.classList.remove("invalid");
+      }
+
+      if (message.length < 10) {
+        msgField.classList.add("invalid");
+        valid = false;
+      } else {
+        msgField.classList.remove("invalid");
+      }
+
+      if (valid) {
+        contactForm.reset();
+        formStatus.style.display = "block";
+        setTimeout(() => {
+          formStatus.style.display = "none";
+        }, 3000);
+      }
+    });
+  </script>
+  <!-- 💬 CHATBOT WIDGET -->
+<div id="chatbot" class="chatbot">
+  <div class="chatbot-header" onclick="toggleChat()">
+    <span>💬 Chat with us</span>
+    <span id="chatToggle">▲</span>
+  </div>
+
+  <div class="chatbot-body" id="chatBody">
+    <div id="chatMessages" class="chat-messages"></div>
+
+    <div class="chat-input">
+      <input type="text" id="userInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter'){sendMessage()}">
+      <button onclick="sendMessage()">▶</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .chatbot {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 320px;
+    font-family: inherit;
+    z-index: 999;
+  }
+
+  .chatbot-header {
+    background: var(--accent);
+    color: white;
+    padding: 12px;
+    border-radius: 12px 12px 0 0;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .chatbot-body {
+    display: none;
+    flex-direction: column;
+    height: 380px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 0 0 12px 12px;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .chat-messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    font-size: 0.85rem;
+  }
+
+  .chat-input {
+    display: flex;
+    border-top: 1px solid var(--border);
+  }
+
+  .chat-input input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--text);
+  }
+
+  .chat-input button {
+    background: var(--accent-strong);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 0 0 12px 0;
+  }
+
+  .message {
+    margin-bottom: 8px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    max-width: 75%;
+    line-height: 1.4;
+  }
+
+  .user {
+    background: var(--accent-strong);
+    color: white;
+    margin-left: auto;
+  }
+
+  .bot {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border);
+    color: var(--text);
+    margin-right: auto;
+  }
+</style>
+
+<script>
+  function toggleChat() {
+    const chatBody = document.getElementById("chatBody");
+    const toggle = document.getElementById("chatToggle");
+    chatBody.style.display = chatBody.style.display === "flex" ? "none" : "flex";
+    toggle.textContent = chatBody.style.display === "flex" ? "▼" : "▲";
+  }
+
+  function sendMessage() {
+    const input = document.getElementById("userInput");
+    const message = input.value.trim();
+    if (!message) return;
+
+    addMessage(message, 'user');
+    input.value = "";
+
+    setTimeout(() => {
+      addMessage(getBotResponse(message), 'bot');
+    }, 500);
+  }
+
+  function addMessage(text, sender) {
+    const chatMessages = document.getElementById("chatMessages");
+    const msgDiv = document.createElement("div");
+    msgDiv.className = `message ${sender}`;
+    msgDiv.textContent = text;
+    chatMessages.appendChild(msgDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function getBotResponse(input) {
+    input = input.toLowerCase();
+
+    if (input.includes("hello") || input.includes("hi")) 
+      return "Hi! 👋 How can I help you today?";
+    if (input.includes("project")) 
+      return "I can help you build frontend, portfolio, chatbot, and more!";
+    if (input.includes("contact")) 
+      return "You can reach me via the contact form above 📩";
+
+    return "I'm just a demo chatbot 🤖, but I can be improved using JavaScript or API!";
+  }
+</script>
+
+</body>
+</html>
